@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.Windows;
+using System.Windows.Input;
+using Assignment.Application.Common.Exceptions;
 using Assignment.Application.TodoItems.Commands.CreateTodoItem;
 using Assignment.Application.TodoLists.Queries.GetTodos;
 using Assignment.Domain.Enums;
@@ -48,13 +50,23 @@ public class TodoItemViewModel : Screen
 
     private async void SaveExecute(object parameter)
     {
-        await _sender.Send(new CreateTodoItemCommand
+        try
         {
-            ListId = CurrentItem.ListId,
-            Title = CurrentItem.Title,
-            Note = CurrentItem.Note,
-            Priority = CurrentItem.Priority
-        });
+            await _sender.Send(new CreateTodoItemCommand
+            {
+                ListId = CurrentItem.ListId,
+                Title = CurrentItem.Title,
+                Note = CurrentItem.Note,
+                Priority = CurrentItem.Priority
+            });
+        }
+        catch (ValidationException vex)
+        {
+            foreach (string key in vex.Errors.Keys)
+            {
+                MessageBox.Show(string.Join(", ", vex.Errors[key]), $"Invalid Todo Item {key}!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         await TryCloseAsync(true);
     }
 
