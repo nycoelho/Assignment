@@ -8,7 +8,7 @@ public class WeatherForecastApi : IWeatherForecastApi
     {
         // mock API: simple algorithm to create a random temperature with a seed
         // based on the city name and hour of the day
-        int cityHash = cityName.GetHashCode();
+        int cityHash = cityName.ToCharArray().Sum(c => c) % int.MaxValue;
         int hourOfDay = time.Hour;
         int seed = cityHash ^ hourOfDay;
         Random rng = new(seed);
