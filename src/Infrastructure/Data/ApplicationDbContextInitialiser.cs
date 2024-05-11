@@ -103,5 +103,44 @@ public class ApplicationDbContextInitialiser
 
             await _context.SaveChangesAsync();
         }
+
+        // Seed Countries and Cities, if necessary
+        if (!_context.Countries.Any())
+        {
+            _context.Countries.Add(new Country
+            {
+                Name = "Portugal",
+                Cities =
+                {
+                    new City { Name = "Lisbon" },
+                    new City { Name = "Porto" },
+                    new City { Name = "Coimbra" },
+                    new City { Name = "Leiria" },
+                }
+            });
+
+            _context.Countries.Add(new Country
+            {
+                Name = "Netherlands",
+                Cities =
+                {
+                    new City { Name = "Amsterdam" },
+                    new City { Name = "Rotterdam" },
+                    new City { Name = "The Hague" },
+                }
+            });
+
+            _context.Countries.Add(new Country
+            {
+                Name = "France",
+                Cities =
+                {
+                    new City { Name = "Paris" },
+                    new City { Name = "Marseille" },
+                }
+            });
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
