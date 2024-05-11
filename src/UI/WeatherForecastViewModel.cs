@@ -1,4 +1,5 @@
-﻿using Assignment.Application.Countries.Queries.GetCountries;
+﻿using Assignment.Application.Common.Interfaces;
+using Assignment.Application.Countries.Queries.GetCountries;
 using Caliburn.Micro;
 using MediatR;
 
@@ -6,6 +7,7 @@ namespace Assignment.UI;
 internal class WeatherForecastViewModel : Screen
 {
     private readonly ISender _sender;
+    private readonly IWeatherForecastApi _weatherForecastApi;
 
     private IList<CountryDto> _countries;
     public IList<CountryDto> Countries
@@ -36,6 +38,14 @@ internal class WeatherForecastViewModel : Screen
         set
         {
             _selectedCity = value;
+            if (_selectedCity is not null)
+            {
+                Temperature = _weatherForecastApi.GetTemperature(_selectedCity.Name, DateTime.Now);
+            }
+            else
+            {
+                Temperature = null;
+            }
             NotifyOfPropertyChange(() => SelectedCity);
         }
     }
@@ -51,9 +61,10 @@ internal class WeatherForecastViewModel : Screen
         }
     }
 
-    public WeatherForecastViewModel(ISender sender)
+    public WeatherForecastViewModel(ISender sender, IWeatherForecastApi weatherForecastApi)
     {
         _sender = sender;
+        _weatherForecastApi = weatherForecastApi;
         Initialize();
     }
 
