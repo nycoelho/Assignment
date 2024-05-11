@@ -59,14 +59,14 @@ internal class TodoManagmentViewModel : Screen
 
     private async void Initialize()
     {
-        await RefereshTodoLists();
+        await RefreshTodoLists();
 
         AddTodoListCommand = new RelayCommand(AddTodoList);
         AddTodoItemCommand = new RelayCommand(AddTodoItem);
         DoneTodoItemCommand = new RelayCommand(DoneTodoItem);
     }
 
-    private async Task RefereshTodoLists()
+    private async Task RefreshTodoLists()
     {
         var selectedListId = SelectedTodoList?.Id;
 
