@@ -81,17 +81,26 @@ internal class TodoManagmentViewModel : Screen
     private async void AddTodoList(object obj)
     {
         var todoList = new TodoListViewModel(_sender);
-        await _windowManager.ShowDialogAsync(todoList);
+        bool? result = await _windowManager.ShowDialogAsync(todoList);
+        if (result == true)
+        {
+            await RefreshTodoLists();
+        }
     }
 
     private async void AddTodoItem(object obj)
     {
         var todoItem = new TodoItemViewModel(_sender, SelectedTodoList.Id);
-        await _windowManager.ShowDialogAsync(todoItem);
+        bool? result = await _windowManager.ShowDialogAsync(todoItem);
+        if (result == true)
+        {
+            await RefreshTodoLists();
+        }
     }
 
     private async void DoneTodoItem(object obj)
     {
         await _sender.Send(new DoneTodoItemCommand(SelectedItem.Id));
+        await RefreshTodoLists();
     }
 }
