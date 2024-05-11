@@ -1,7 +1,9 @@
 ﻿using Assignment.Application.Common.Interfaces;
+using Assignment.Domain.Constants;
 using Assignment.Domain.Entities;
 using Assignment.Domain.Enums;
 using Assignment.Domain.Events;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Assignment.Application.TodoItems.Commands.CreateTodoItem;
 
@@ -17,10 +19,12 @@ public record CreateTodoItemCommand : IRequest<int>
 public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, int>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMemoryCache _memoryCache;
 
-    public CreateTodoItemCommandHandler(IApplicationDbContext context)
+    public CreateTodoItemCommandHandler(IApplicationDbContext context, IMemoryCache memoryCache)
     {
         _context = context;
+        _memoryCache = memoryCache;
     }
 
     public async Task<int> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken)
@@ -39,6 +43,9 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
         _context.TodoItems.Add(entity);
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        // Reset Todos cache
+        _memoryCache.Remove(Caches.TodosKey);
 
         return entity.Id;
     }

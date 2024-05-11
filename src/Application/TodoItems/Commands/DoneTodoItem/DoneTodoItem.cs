@@ -1,4 +1,6 @@
 ﻿using Assignment.Application.Common.Interfaces;
+using Assignment.Domain.Constants;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Assignment.Application.TodoItems.Commands.DoneTodoItem;
 
@@ -7,10 +9,12 @@ public record DoneTodoItemCommand(int Id) : IRequest;
 public class DoneTodoItemCommandHandler : IRequestHandler<DoneTodoItemCommand>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMemoryCache _memoryCache;
 
-    public DoneTodoItemCommandHandler(IApplicationDbContext context)
+    public DoneTodoItemCommandHandler(IApplicationDbContext context, IMemoryCache memoryCache)
     {
         _context = context;
+        _memoryCache = memoryCache;
     }
 
     public async Task Handle(DoneTodoItemCommand request, CancellationToken cancellationToken)
@@ -23,5 +27,8 @@ public class DoneTodoItemCommandHandler : IRequestHandler<DoneTodoItemCommand>
         entity.Done = true;
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        // Reset Todos cache
+        _memoryCache.Remove(Caches.TodosKey);
     }
 }
