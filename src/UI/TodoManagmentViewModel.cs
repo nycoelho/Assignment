@@ -62,7 +62,7 @@ internal class TodoManagmentViewModel : Screen
         await RefreshTodoLists();
 
         AddTodoListCommand = new RelayCommand(AddTodoList);
-        AddTodoItemCommand = new RelayCommand(AddTodoItem);
+        AddTodoItemCommand = new RelayCommand(AddTodoItem, CanExecuteAddTodoItem);
         DoneTodoItemCommand = new RelayCommand(DoneTodoItem);
     }
 
@@ -96,6 +96,11 @@ internal class TodoManagmentViewModel : Screen
         {
             await RefreshTodoLists();
         }
+    }
+
+    private bool CanExecuteAddTodoItem(object obj)
+    {
+        return SelectedTodoList is not null;
     }
 
     private async void DoneTodoItem(object obj)
