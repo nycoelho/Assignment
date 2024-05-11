@@ -1,5 +1,6 @@
 ﻿using Assignment.Application.Common.Interfaces;
 using Assignment.Domain.Constants;
+using Assignment.Infrastructure.Api;
 using Assignment.Infrastructure.Data;
 using Assignment.Infrastructure.Data.Interceptors;
 using Assignment.Infrastructure.Identity;
@@ -45,6 +46,7 @@ public static class DependencyInjection
 
         services.AddSingleton(TimeProvider.System);
         services.AddTransient<IIdentityService, IdentityService>();
+        services.AddTransient<IWeatherForecastApi, WeatherForecastApi>();
 
         services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
